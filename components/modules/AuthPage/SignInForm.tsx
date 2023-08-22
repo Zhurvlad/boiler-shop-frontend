@@ -41,7 +41,7 @@ export const SignInFrom:FC<SignInForm> = ({switchForm}) => {
       console.log(userData)
       switchForm()
       reset()
-      route.push('/dashbord')
+      route.push('/dashboard')
 
     } catch (error) {
       showAuthError(error)

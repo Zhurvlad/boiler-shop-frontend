@@ -10,11 +10,14 @@ import styles from '../../../styles/profileDropDown/index.module.scss';
 import {LogoutSvg} from '../../elements/LogOutSvg/LogOutSvg';
 import {withClickOutside} from '../../../utils/withClickOutside';
 import {IWrappedComponentProps} from '../../../types/common';
+import {$user} from '../../../context/user';
 
 
 const ProfileDropDown = forwardRef<HTMLDivElement, IWrappedComponentProps>(({opened, setOpened}, ref) => {
 
   const mode = useStore($mode)
+  const user = useStore($user)
+  console.log(user, 345)
   const darkModeClass = mode === 'dark' ? `${styles.dark_mode}` : ''
 
   const toggleProfileDropDown = () => setOpened(!opened)
@@ -39,8 +42,8 @@ const ProfileDropDown = forwardRef<HTMLDivElement, IWrappedComponentProps>(({ope
             style={{transformOrigin: 'right top'}}
           >
             <li className={styles.profile__dropdown__user}>
-              <span className={`${styles.profile__dropdown__username} ${darkModeClass}`}>Ivan</span>
-              <span className={`${styles.profile__dropdown__email} ${darkModeClass}`}>ivan@gmail.com</span>
+              <span className={`${styles.profile__dropdown__username} ${darkModeClass}`}>{user.username}</span>
+              <span className={`${styles.profile__dropdown__email} ${darkModeClass}`}>{user.email}</span>
             </li>
             <li className={styles.profile__dropdown__item}>
               <button className={styles.profile__dropdown__item__btn}>

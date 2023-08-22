@@ -9,6 +9,8 @@ import {$mode} from '../../../context/mode';
 import {useMediaQuery} from '../../../hooks/useMediaQuery';
 
 import styles from '../../../styles/dashboard/index.module.scss'
+import {BrandsSliderNextArrow} from '../../elements/BrandSliderNextArrow/BrandsSliderNextArrow';
+import {BrandsSliderPrevArrow} from '../../elements/BrandSliderPrevArrow/BrandSliderPrevArrow';
 
 const brandSlider = [
   {id: 1, img: '/img/brand-1.png', alt: 'brand-1'},
@@ -33,11 +35,13 @@ export const BrandSlider = () => {
 
 
   React.useEffect(() => {
-    const slider = document.querySelector(`.${styles.dashboard__brands__slider}`) as HTMLElement
+    const slider = document.querySelector(
+      `.${styles.dashboard__brands__slider}`
+    )
 
     const list = slider?.querySelector('.slick-list') as HTMLElement
 
-    list.style.height = isMedia768 ? "60px" : '80px'
+    list.style.height = isMedia768 ? '60px' : '80px'
   }, [isMedia768])
 
   const settings = {
@@ -47,14 +51,16 @@ export const BrandSlider = () => {
     variableWidth: true,
     autoplay: true,
     speed: 500,
+    nextArrow: <BrandsSliderNextArrow modeClass={darkModeClass}/>,
+    prevArrow: <BrandsSliderPrevArrow modeClass={darkModeClass}/>
   };
 
   return (
     <Slider {...settings} className={styles.dashboard__brands__slider}>
-      {brandSlider.map((i, index) => (
+      {brandSlider.map((i, _) => (
         <div
           key={i.id}
-          className={`${styles.dashboard__brands__slider} ${darkModeClass}`}
+          className={`${styles.dashboard__brands__slide} ${darkModeClass}`}
           style={{width: isMedia768 ? 124 : 180}}>
           <img src={i.img} alt={i.alt}/>
         </div>
