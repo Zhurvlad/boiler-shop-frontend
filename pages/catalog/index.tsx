@@ -1,10 +1,11 @@
 import Head from 'next/head'
 
 import {Layout} from '../../components/layout/Layout';
-import {DashboardPage} from '../../components/templates/DashboardPage/DashboardPage';
+import {DashboardPage} from '../../components/templates/DashboardPage/Dashboard';
 import {useRedirectByUserCheck} from '../../hooks/useRedirectByUserCheck';
+import {CatalogPage} from '../../components/templates/CatalogPage/CatalogPage';
 
-export default function Dashboard() {
+export default function Catalog() {
 
   const {shouldLoadContent} = useRedirectByUserCheck()
 
@@ -12,7 +13,7 @@ export default function Dashboard() {
   return (
     <>
       <Head>
-        <title>Акватермикс | {shouldLoadContent ? 'Главная' : ''}</title>
+        <title>Акватермикс | {shouldLoadContent ? 'Каталог' : ''}</title>
         <meta charSet='UTF-8'/>
         <meta httpEquiv='X-UA-Compatible' content='IE-edge'/>
         <meta name="viewport" content="width=device-width, initial-scale=1"/>
@@ -22,7 +23,7 @@ export default function Dashboard() {
       &&
       <Layout>
         <main>
-          <DashboardPage/>
+          <CatalogPage/>
           <div className={'overlay'}/>
         </main>
       </Layout>}

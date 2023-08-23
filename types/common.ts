@@ -1,4 +1,5 @@
 import React from 'react';
+import {MultiValue, SingleValue} from 'react-select';
 
 
 export interface IWrappedComponentProps {
@@ -19,3 +20,10 @@ export interface ILayoutProps {
 }
 
 
+export interface IOption {
+  value: string | number,
+  label: string | number
+}
+
+
+export type SelectOptionType = MultiValue<IOption> | SingleValue<IOption> | null

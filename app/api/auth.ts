@@ -31,6 +31,15 @@ export const signInFX =  createEffect(async ({url, username, password}: ISignInF
   return data
 })
 
+export const LogOutFX =  createEffect(async (url: string) => {
+  try {
+   await api.get(url)
+  } catch (e) {
+    toast.error((e as Error).message)
+  }
+
+})
+
 export const checkUserAuthFX =  createEffect(async (url: string) => {
   try {
     const {data} = await api.get(url)

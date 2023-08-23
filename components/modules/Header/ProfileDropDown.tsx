@@ -11,16 +11,25 @@ import {LogoutSvg} from '../../elements/LogOutSvg/LogOutSvg';
 import {withClickOutside} from '../../../utils/withClickOutside';
 import {IWrappedComponentProps} from '../../../types/common';
 import {$user} from '../../../context/user';
+import {LogOutFX} from '../../../app/api/auth';
+import {useRouter} from 'next/router';
 
 
 const ProfileDropDown = forwardRef<HTMLDivElement, IWrappedComponentProps>(({opened, setOpened}, ref) => {
 
   const mode = useStore($mode)
   const user = useStore($user)
-  console.log(user, 345)
+
+  const router = useRouter()
+
   const darkModeClass = mode === 'dark' ? `${styles.dark_mode}` : ''
 
   const toggleProfileDropDown = () => setOpened(!opened)
+
+  const handleLogOut = async () => {
+    await LogOutFX('/users/logout')
+    router.push('/')
+  }
 
   console.log(opened)
 
@@ -47,7 +56,7 @@ const ProfileDropDown = forwardRef<HTMLDivElement, IWrappedComponentProps>(({ope
             </li>
             <li className={styles.profile__dropdown__item}>
               <button className={styles.profile__dropdown__item__btn}>
-                <span className={`${styles.profile__dropdown__item__text} ${darkModeClass}`}>Выйти</span>
+                <span onClick={handleLogOut} className={`${styles.profile__dropdown__item__text} ${darkModeClass}`}>Выйти</span>
                 <span className={`${styles.profile__dropdown__item__svg} ${darkModeClass}`}>
                 <LogoutSvg/>
               </span>

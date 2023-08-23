@@ -1,7 +1,7 @@
 import {useStore} from 'effector-react';
 import {$mode} from '../../../context/mode';
 import React, {useState} from 'react';
-import {SelectOptionType} from '../../../utils/common';
+import {SelectOptionType} from '../../../types/common';
 import Select from 'react-select';
 import {controlStyles, inputStyles, menuStyles, optionStyles} from '../../../styles/searchInput/index';
 import {defaultStyles} from 'react-select/dist/declarations/src/styles';

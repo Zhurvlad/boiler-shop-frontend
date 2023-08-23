@@ -15,23 +15,6 @@ import skeletonStyles from '../../../styles/skeleton/index.module.scss'
 import Link from 'next/link';
 import {formatPrice} from '../../../utils/common';
 
-const brandSlider = [
-  {id: 1, img: '/img/brand-1.png', alt: 'brand-1'},
-  {id: 2, img: '/img/brand-2.png', alt: 'brand-2'},
-  {id: 3, img: '/img/brand-3.png', alt: 'brand-3'},
-  {id: 4, img: '/img/brand-4.png', alt: 'brand-4'},
-  {id: 5, img: '/img/brand-1.png', alt: 'brand-1'},
-  {id: 6, img: '/img/brand-2.png', alt: 'brand-2'},
-  {id: 7, img: '/img/brand-3.png', alt: 'brand-3'},
-  {id: 8, img: '/img/brand-4.png', alt: 'brand-4'},
-  {id: 9, img: '/img/brand-1.png', alt: 'brand-1'},
-  {id: 10, img: '/img/brand-2.png', alt: 'brand-2'},
-  {id: 11, img: '/img/brand-3.png', alt: 'brand-3'},
-  {id: 12, img: '/img/brand-4.png', alt: 'brand-4'},
-]
-
-//TODO: Понять почему не меняется на белый цвет
-
 export const DashboardSlider = ({items, spinner, goToPartPage}: IDashboardSlider) => {
 
   const isMedia560 = useMediaQuery(560)
