@@ -4,7 +4,8 @@ import {
   GroupBase,
   CSSObjectWithLabel,
 } from 'react-select'
-import {IOption} from '../../utils/common';
+import {IOption} from '../../types/common';
+
 
 
 export const controlStyles = (
