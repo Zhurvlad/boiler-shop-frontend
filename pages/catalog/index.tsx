@@ -4,8 +4,9 @@ import {Layout} from '../../components/layout/Layout';
 import {DashboardPage} from '../../components/templates/DashboardPage/Dashboard';
 import {useRedirectByUserCheck} from '../../hooks/useRedirectByUserCheck';
 import {CatalogPage} from '../../components/templates/CatalogPage/CatalogPage';
+import {IQueryParams} from '../../types/catalog';
 
-export default function Catalog() {
+export default function Catalog({query}: {query:IQueryParams }) {
 
   const {shouldLoadContent} = useRedirectByUserCheck()
 
@@ -23,10 +24,16 @@ export default function Catalog() {
       &&
       <Layout>
         <main>
-          <CatalogPage/>
+          <CatalogPage query={query}/>
           <div className={'overlay'}/>
         </main>
       </Layout>}
     </>
   )
+}
+
+export function getServerSideProps(context : {query : IQueryParams}) {
+  return {
+    props: {query : {...context.query}}
+  }
 }
