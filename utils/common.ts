@@ -1,4 +1,5 @@
 import {MultiValue, SingleValue} from 'react-select';
+import {NextRouter} from 'next/router';
 
 export const getWindowWidth = () => {
   const {innerWidth: windowWidth} =
@@ -35,4 +36,7 @@ export const idGenerator = () => {
   )
 }
 
+//Позволяет доставать квери параметры при первом рендере
+export const getQueryParamOnFirstRender = (queryName: string, router: NextRouter) =>
+  router.query[queryName] || router.asPath.match(new RegExp(`[&?]${queryName}=(.*)(&|$)`))
 

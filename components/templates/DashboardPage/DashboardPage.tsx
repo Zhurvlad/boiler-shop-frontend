@@ -25,7 +25,7 @@ export const DashboardPage = () => {
   const shoppingCart = useStore($shoppingCart)
   const [showAlert, setShowAlert] = React.useState(!!shoppingCart.length)
 
-  console.log(bestsellers)
+
 
   const mode = useStore($mode)
   const darkModeClass = mode === 'dark' ? `${styles.dark_mode}` : ''

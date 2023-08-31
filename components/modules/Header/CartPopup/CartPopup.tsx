@@ -20,7 +20,7 @@ const CartPopup = forwardRef<HTMLDivElement, IWrappedComponentProps>(({opened, s
 
   const toggleCartDropDown = () => setOpened(!opened)
 
-  console.log(opened)
+
 
   return (
     <div className={styles.cart} ref={ref}>

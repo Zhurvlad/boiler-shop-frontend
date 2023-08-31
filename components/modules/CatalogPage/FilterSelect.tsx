@@ -15,9 +15,10 @@ import {
   setBoilerPartsExpensiveFirst
 } from '../../../context/boilerParts';
 import {useRouter} from 'next/router';
+import {setTimeout} from 'timers';
 
 
-export const FilterSelect = () => {
+export const FilterSelect = ({setSpinner}: (a: boolean) => void) => {
 
   const mode = useStore($mode)
   const boilerParts = useStore($boilerParts)
@@ -69,6 +70,7 @@ export const FilterSelect = () => {
     ))
 
   const handleCategoryOptionChange = (selectedOption: SelectOptionType) => {
+    setSpinner(true)
     setCategoryOption(selectedOption)
     switch ((selectedOption as IOption).value) {
       case 'Сначала дешевые':
@@ -85,6 +87,8 @@ export const FilterSelect = () => {
         updateRoteParam('popular')
         break
     }
+
+    setTimeout(() => setSpinner(false), 1000)
   }
 
   return (

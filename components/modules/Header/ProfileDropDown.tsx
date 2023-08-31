@@ -31,7 +31,7 @@ const ProfileDropDown = forwardRef<HTMLDivElement, IWrappedComponentProps>(({ope
     router.push('/')
   }
 
-  console.log(opened)
+
 
   return (
     <>

@@ -16,7 +16,7 @@ import React from 'react';
 
 
 export const CatalogFiltersDesktop = ({priceRange, setPriceRange, setIsPriceRangeChanged,
-                                        resetFilterBtnDisabled, spinner, resetFilters}: ICatalogFilterDesktopProps) => {
+                                        resetFilterBtnDisabled, spinner, resetFilters, applyFilters}: ICatalogFilterDesktopProps) => {
 
 
   const mode = useStore($mode)
@@ -60,7 +60,7 @@ export const CatalogFiltersDesktop = ({priceRange, setPriceRange, setIsPriceRang
           />
         </div>
         <div className={styles.filters__actions}>
-          <button className={styles.filters__actions__show}
+          <button onClick={applyFilters} className={styles.filters__actions__show}
                   disabled={spinner || resetFilterBtnDisabled}>{spinner
             ? <span className={spinnerStyles.spinner} style={{top: 6, left: '47%'}}/>
             : 'Показать'} </button>

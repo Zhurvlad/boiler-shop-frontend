@@ -3,6 +3,7 @@ import {$mode} from '../../../context/mode';
 import styles from '../../../styles/catalog/index.module.scss';
 import {getTrackBackground, Range} from 'react-range';
 import {IPriceRange} from '../../../types/catalog';
+import React from 'react';
 
 const STEP = 1
 const MIN = 0
@@ -21,10 +22,10 @@ export const PriceRange = ({priceRange, setPriceRange, setIsPriceRangeChanged}: 
 
   return (
     <div className={styles.filters__price}>
-      <div className={`${styles.filters__price__inputs} ${darkModeClass}`}>
-        <input value={Math.ceil(priceRange[0])} placeholder={'от 0 '} type="text"/>
+      <div  className={`${styles.filters__price__inputs} ${darkModeClass}`}>
+        <input readOnly value={Math.ceil(priceRange[0])} placeholder={'от 0 '} type="text"/>
         <span className={styles.filters__price__inputs__border}/>
-        <input value={Math.ceil(priceRange[1])} placeholder={'до 10000 '} type="text"/>
+        <input readOnly value={Math.ceil(priceRange[1])} placeholder={'до 10000 '} type="text"/>
       </div>
       <Range
         values={priceRange}

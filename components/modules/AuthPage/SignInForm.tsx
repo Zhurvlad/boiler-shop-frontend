@@ -38,7 +38,7 @@ export const SignInFrom:FC<SignInForm> = ({switchForm}) => {
         username: data.name,
         password: data.password
       })
-      console.log(userData)
+
       switchForm()
       reset()
       route.push('/dashboard')

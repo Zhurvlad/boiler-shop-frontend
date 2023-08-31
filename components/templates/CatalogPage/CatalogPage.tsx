@@ -10,7 +10,7 @@ import {$mode} from '../../../context/mode';
 import {getBoilerPartsFx} from '../../../app/api/boilerParts';
 import {
   $boilerManufacturers,
-  $boilerParts,
+  $boilerParts, $filteredBoilerParts,
   $partsManufacturers, setBoilerManufacturers,
   setBoilerParts, setPartsManufacturers,
   updateBoilerManufacturers, updatePartsManufacturers
@@ -26,18 +26,22 @@ import {IBoilerParts} from '../../../types/boilerParts';
 
 import skeletonStyles from '../../../styles/skeleton/index.module.scss'
 import styles from '../../../styles/catalog/index.module.scss'
+import {setTimeout} from 'timers';
 
 
 export const CatalogPage = ({query}: { query: IQueryParams }) => {
 
   const boilerManufacturers = useStore($boilerManufacturers)
   const partsManufacturers = useStore($partsManufacturers)
+  const filteredBoilerParts = useStore($filteredBoilerParts)
   const boilerParts = useStore($boilerParts)
   const mode = useStore($mode)
+
   const darkModeClass = mode === 'dark' ? `${styles.dark_mode}` : ''
   const router = useRouter()
 
   const [spinner, setSpinner] = React.useState(false)
+  const [isFilteredInQuery, setFilteredInQuery] = React.useState(false)
 
   const [priceRange, setPriceRange] = React.useState([0, 10000])
   const [isPriceRangeChanged, setIsPriceRangeChanged] = React.useState(false)
@@ -50,16 +54,16 @@ export const CatalogPage = ({query}: { query: IQueryParams }) => {
     || isAnyBoilerManufacturerChecked
     || isAnyPartsManufacturerChecked)
 
-  console.log(resetFilterBtnDisabled)
 
   const pageCount = Math.ceil(boilerParts.count / 20)
+
 
   const isValidOffset = query?.offset && !isNaN(+query.offset) && query.offset > 0
   const [currentPage, setCurrentPage] = React.useState(isValidOffset ? +query.offset - 1 : 0)
 
   React.useEffect(() => {
     loadBoilerParts()
-  }, [])
+  }, [filteredBoilerParts, isFilteredInQuery])
 
 
   const loadBoilerParts = async () => {
@@ -87,21 +91,24 @@ export const CatalogPage = ({query}: { query: IQueryParams }) => {
           }, undefined, {shallow: true})
 
           setCurrentPage(0)
-          setBoilerParts(data)
+          setBoilerParts(isFilteredInQuery ? filteredBoilerParts : data)
           return
         }
+        const offset = +query.offset - 1
+        const result = await getBoilerPartsFx(`/boiler-parts?limit=20&offset=${offset}`)
+
+        setCurrentPage(offset)
+        setBoilerParts(isFilteredInQuery ? filteredBoilerParts : result)
+        return
       }
 
-      const offset = +query.offset - 1
-      const result = await getBoilerPartsFx(`/boiler-parts?limit=20&offset=${offset}`)
-
-      setCurrentPage(offset)
-      setBoilerParts(result)
+      setCurrentPage(0)
+      setBoilerParts(isFilteredInQuery ? filteredBoilerParts : data)
 
     } catch (e) {
       toast.error((e as Error).message)
     } finally {
-      setSpinner(false)
+      setTimeout(() => setSpinner(false), 1000)
     }
   }
 
@@ -112,19 +119,25 @@ export const CatalogPage = ({query}: { query: IQueryParams }) => {
 
   const handlePageChange = async ({selected}: { selected: number }) => {
     try {
+      setSpinner(true)
       const data = await getBoilerPartsFx('/boiler-parts?limit=20&offset=0')
 
       if (selected > pageCount) {
-        resetPagination(data)
+        resetPagination(isFilteredInQuery ? filteredBoilerParts : data)
         return
       }
 
       if (isValidOffset && +query.offset > Math.ceil(data.count / 20)) {
-        resetPagination(data)
+        resetPagination(isFilteredInQuery ? filteredBoilerParts : data)
         return
       }
 
-      const result = await getBoilerPartsFx(`/boiler-parts?limit=20&offset=${selected}`)
+      const result = await getBoilerPartsFx(`/boiler-parts?limit=20&offset=${selected}
+        ${isFilteredInQuery && router.query.boiler ? `&boiler=${router.query.boiler}` : ''}
+        ${isFilteredInQuery && router.query.parts ? `&parts=${router.query.parts}` : ''}
+        ${isFilteredInQuery && router.query.priceFrom && router.query.priceTo
+        ? `&priceFrom=${router.query.priceFrom}&priceTo=${router.query.priceTo}` : ''}
+        `)
 
       await router.push({
         query: {
@@ -137,12 +150,24 @@ export const CatalogPage = ({query}: { query: IQueryParams }) => {
       setBoilerParts(result)
     } catch (e) {
       toast.error((e as Error).message)
+    } finally {
+      setTimeout(() => setSpinner(false), 1000)
     }
   }
 
   const resetFilters = async () => {
     try {
       const data = await getBoilerPartsFx('/boiler-parts?limit=20&offset=0')
+      const params = router.query
+
+      delete params.boiler
+      delete params.parts
+      delete params.priceTo
+      delete params.priceFrom
+      params.first = 'cheap'
+
+      await router.push({query: {...params}}, undefined, {shallow: true})
+
 
       setBoilerManufacturers(boilerManufacturers.map((i) => ({...i, checked: false})))
       setPartsManufacturers(partsManufacturers.map((i) => ({...i, checked: false})))
@@ -174,10 +199,10 @@ export const CatalogPage = ({query}: { query: IQueryParams }) => {
           </AnimatePresence>
           <div className={styles.catalog__top__inner}>
             <button onClick={resetFilters}
-              className={`${styles.catalog__top__reset} ${darkModeClass}`} disabled={resetFilterBtnDisabled}
+                    className={`${styles.catalog__top__reset} ${darkModeClass}`} disabled={resetFilterBtnDisabled}
             >Сбросить фильтр
             </button>
-            <FilterSelect/>
+            <FilterSelect setSpinner={setSpinner}/>
           </div>
         </div>
         <div className={styles.catalog__bottom}>
@@ -188,13 +213,15 @@ export const CatalogPage = ({query}: { query: IQueryParams }) => {
                             resetFilterBtnDisabled={resetFilterBtnDisabled}
                             resetFilters={resetFilters}
                             isPriceRangeChanged={isPriceRangeChanged}
+                            currentPage={currentPage}
+                            setFilteredInQuery={setFilteredInQuery}
             />
             {spinner
               ? <ul className={skeletonStyles.skeleton}>
-                {Array.from(new Array(8)).map((i) => (
+                {Array.from(new Array(20)).map((i, index) => (
                   <li
                     className={`${skeletonStyles.skeleton__item} ${mode === 'dark' ? `${skeletonStyles.dark_mode}` : ''}`}
-                    key={i}>
+                    key={index}>
                     <div className={skeletonStyles.skeleton__item__light}/>
                   </li>
                 ))}
