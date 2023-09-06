@@ -4,8 +4,16 @@ import {withHydrate} from 'effector-next';
 import NextNProgress from 'nextjs-progressbar';
 import '../styles/globals.css'
 import {ToastContainer} from 'react-toastify';
+import { attachLogger } from 'effector-logger';
+import {fork} from 'effector';
+import {$shoppingCart} from '../context/shopping-cart';
 
 const enhance = withHydrate()
+
+
+
+
+
 
 function App({ Component, pageProps }: AppProps) {
 

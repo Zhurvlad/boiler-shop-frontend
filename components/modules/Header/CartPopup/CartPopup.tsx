@@ -6,7 +6,7 @@ import {withClickOutside} from '../../../../utils/withClickOutside';
 import {ShoppingCartSvg} from '../../../elements/ShoppingCartSvg/ShoppingCartSvg';
 import {IWrappedComponentProps} from '../../../../types/common';
 import {$mode} from '../../../../context/mode';
-import {$shoppingCart, setShoppingCart} from '../../../../context/shopping-cart'
+import {$shoppingCart, $totalPrice, setShoppingCart, setTotalPrice} from '../../../../context/shopping-cart'
 
 import styles from '../../../../styles/cartPopup/index.module.scss'
 import Link from 'next/link';
@@ -14,20 +14,29 @@ import {CartPopupItem} from './CartPopupItem';
 import {$user} from '../../../../context/user';
 import {getCartItemsFx} from '../../../../app/api/shopping-cart';
 import {toast} from 'react-toastify';
+import {formatPrice} from '../../../../utils/common';
 
 
 const CartPopup = forwardRef<HTMLDivElement, IWrappedComponentProps>(({opened, setOpened}, ref) => {
 
   const mode = useStore($mode)
   const user = useStore($user)
+  const totalPrice = useStore($totalPrice)
   const shoppingCart = useStore($shoppingCart)
   const darkModeClass = mode === 'dark' ? `${styles.dark_mode}` : ''
+
+  console.log(shoppingCart, 9999)
 
   const toggleCartDropDown = () => setOpened(!opened)
 
   React.useEffect(() => {
     loadCartItems()
   }, [])
+  console.log(shoppingCart.reduce((sum, obj) => sum + obj.total_price, 0), 9090)
+
+  React.useEffect(() => {
+    setTotalPrice(shoppingCart.reduce((sum, obj) => sum + obj.total_price, 0))
+  }, [shoppingCart])
 
   const loadCartItems = async () => {
     try {
@@ -76,7 +85,7 @@ const CartPopup = forwardRef<HTMLDivElement, IWrappedComponentProps>(({opened, s
           <div className={styles.cart__popup__footer}>
             <div className={styles.cart__popup__footer__total}>
               <span className={`${styles.cart__popup__footer__text} ${darkModeClass}`}>Общая сумма заказа</span>
-              <span className={styles.cart__popup__footer__price}>0</span>
+              <span className={styles.cart__popup__footer__price}>{formatPrice(totalPrice)} P</span>
             </div>
             <Link href={'/order'} passHref legacyBehavior>
               <button className={styles.cart__popup__footer__btn} disabled={!shoppingCart.length}>

@@ -17,6 +17,8 @@ export const ManufacturersBlock = ({title, event, manufacturerList}: IManufactur
   const darkModeClass = mode === 'dark' ? `${styles.dark_mode}` : ''
   const checkedItem = manufacturerList.filter((i) => i.checked)
 
+  /*console.log(checkedItem, 9090)*/
+
   return (
     <motion.div
       initial={{opacity: 0}}

@@ -1,10 +1,25 @@
 import Head from 'next/head'
 import {AuthPage} from '../components/templates/AuthPage/AuthPage';
 import {useRedirectByUserCheck} from '../hooks/useRedirectByUserCheck';
+import { attachLogger } from 'effector-logger';
+import {useStore} from 'effector-react';
+import {$mode} from '../context/mode';
+import {fork} from 'effector';
+import {$shoppingCart, scope} from '../context/shopping-cart';
+
+
+
+
+attachLogger({scope});
+attachLogger({
+  name: 'my-cool-app',
+});
 
 export default function Auth() {
 
   const {shouldLoadContent} = useRedirectByUserCheck(true)
+
+
 
   return (
     <>

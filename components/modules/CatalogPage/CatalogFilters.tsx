@@ -123,8 +123,8 @@ export const CatalogFilters = ({
     setIsPriceRangeChanged(true)
   }
 
-  //TODO: Разобраться с огромным количество рендеров ползунка с ценой. Добавить дебоунс
-  console.log(isPriceRangeChanged, 1010)
+  /*//TODO: Разобраться с огромным количество рендеров ползунка с ценой. Добавить дебоунс
+  console.log(isPriceRangeChanged, 1010)*/
 
   const applyFilters = async () => {
     setFilteredInQuery(true)

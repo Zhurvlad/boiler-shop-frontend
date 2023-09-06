@@ -4,18 +4,33 @@ import styles from '../../../../styles/cartPopup/index.module.scss';
 import {IShoppingCartItem} from '../../../../types/shoppingCart';
 import Link from 'next/link';
 import {DeleteSvg} from '../../../elements/DeleteSvg/DeleteSvg';
-import React from 'react';
+import React, {useState} from 'react';
 import spinnerStyles from '../../../../styles/spinner/index.module.scss'
 import {formatPrice} from '../../../../utils/common';
-import {removeItemFromCart} from '../../../../utils/shopping-cart';
+import {removeItemFromCart, updateTotalPrice} from '../../../../utils/shopping-cart';
+
+import {CartItemCount} from '../../../elements/CartItemCounter/CartItemCounter';
 
 
 export const CartPopupItem = ({item}: { item: IShoppingCartItem }) => {
 
   const mode = useStore($mode)
   const darkModeClass = mode === 'dark' ? `${styles.dark_mode}` : ''
-  const spinnerDarkModeClass = mode === 'dark' ? `${spinnerStyles.dark_mode}` : ''
+  const spinnerDarkModeClass = mode === 'dark' ? '' : `${spinnerStyles.dark_mode}`
   const [spinner, setSpinner] = React.useState(false)
+
+  const [price, setPrice] = useState(item.price)
+
+  React.useEffect(() => {
+    setPrice(price * item.count)
+  }, [])
+
+  React.useEffect(() => {
+    updateTotalPrice(price, item.partId)
+  },[price])
+
+  const increasePrice = () => setPrice(price + item.price)
+  const decreasePrice = () => setPrice(price - item.price)
 
   const deleteCartItem = () => removeItemFromCart(item.partId, setSpinner)
 
@@ -40,8 +55,9 @@ export const CartPopupItem = ({item}: { item: IShoppingCartItem }) => {
       <div className={styles.cart__popup__list__item__bottom}>
         {item.in_stocks === 0
           ? <span className={styles.cart__popup__list__item__empty}>Нет на складе</span>
-          : <div/>}
-          <span className={`${styles.cart__popup__list__item__price} ${darkModeClass}`}>{formatPrice(item.price)} p</span>
+          : <CartItemCount decreasePrice={decreasePrice} increasePrice={increasePrice}
+                           initialCount={item.count} partId={item.partId} totalCount={item.in_stocks}/>}
+          <span className={`${styles.cart__popup__list__item__price} ${darkModeClass}`}>{formatPrice(price)} p</span>
       </div>
     </li>
   )

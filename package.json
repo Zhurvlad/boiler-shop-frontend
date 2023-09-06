@@ -37,8 +37,10 @@
   "devDependencies": {
     "@typescript-eslint/eslint-plugin": "^6.3.0",
     "@typescript-eslint/parser": "^6.3.0",
+    "effector-logger": "^0.14.0",
     "eslint-config-prettier": "^9.0.0",
     "eslint-plugin-prettier": "^5.0.0",
     "prettier": "^3.0.1"
-  }
+  },
+  "plugins": [["effector/babel-plugin", { "addLoc": true }]]
 }

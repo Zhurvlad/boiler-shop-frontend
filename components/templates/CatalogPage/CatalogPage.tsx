@@ -11,7 +11,7 @@ import {getBoilerPartsFx} from '../../../app/api/boilerParts';
 import {
   $boilerManufacturers,
   $boilerParts, $filteredBoilerParts,
-  $partsManufacturers, setBoilerManufacturers,
+  $partsManufacturers, scopeA, setBoilerManufacturers,
   setBoilerParts, setPartsManufacturers,
   updateBoilerManufacturers, updatePartsManufacturers
 } from '../../../context/boilerParts';
@@ -30,6 +30,7 @@ import {setTimeout} from 'timers';
 import {usePopup} from '../../../hooks/usePopup';
 import {checkQueryParams} from '../../../utils/catalog';
 import {FilterSvg} from '../../elements/FilterSvg/FilterSvg';
+import {$shoppingCart, scope} from '../../../context/shopping-cart';
 
 
 export const CatalogPage = ({query}: { query: IQueryParams }) => {
@@ -60,7 +61,7 @@ export const CatalogPage = ({query}: { query: IQueryParams }) => {
 
   const pageCount = Math.ceil(boilerParts.count / 20)
 
-  console.log(boilerParts.rows)
+  /*console.log(boilerParts.rows)*/
 
   const isValidOffset = query?.offset && !isNaN(+query.offset) && query.offset > 0
   const [currentPage, setCurrentPage] = React.useState(isValidOffset ? +query.offset - 1 : 0)
@@ -122,6 +123,12 @@ export const CatalogPage = ({query}: { query: IQueryParams }) => {
     setCurrentPage(0)
     setBoilerParts(data)
   }
+
+  /*console.log('SCOPE', scope.getState($shoppingCart))*/
+
+  console.log('BOILER', scopeA.getState($boilerParts))
+
+
 
   const handlePageChange = async ({selected}: { selected: number }) => {
     try {

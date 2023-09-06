@@ -1,6 +1,6 @@
 import {createEffect} from 'effector-next';
 import api from '../axiosClient'
-import {IAddToCartFx} from '../../types/shoppingCart';
+import {IAddToCartFx, IUpdateCartItemFx} from '../../types/shoppingCart';
 
 
 
@@ -18,5 +18,11 @@ export const addToCartFx = createEffect(async ({url, username, partId}: IAddToCa
 
 export const removeFromCartFx = createEffect(async (url: string) => {
   await api.delete(url)
-
 })
+
+export const updateCartItemFx = createEffect(async ({url, payload}: IUpdateCartItemFx) => {
+const {data} =  await api.patch(url, payload)
+
+  return data
+})
+

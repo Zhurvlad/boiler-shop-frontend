@@ -1,4 +1,4 @@
-import {createDomain} from 'effector';
+import {createDomain, fork} from 'effector';
 import {IShoppingCartItem} from '../types/shoppingCart';
 import {IBoilerPart, IBoilerParts} from '../types/boilerParts';
 import {IFilterCheckboxItem} from '../types/catalog';
@@ -88,3 +88,4 @@ export const $filteredBoilerParts = boilerParts
   .on(setFilteredBoilerParts, (_, parts) => parts)
 
 
+export const scopeA = fork(boilerParts)

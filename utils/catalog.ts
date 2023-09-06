@@ -88,3 +88,5 @@ export async function updateParamsAndFilters<T>(updateParams: T, path: string, r
   const data = await getBoilerPartsFx(`/boiler-parts?limit=20&offset=${path}`)
   setFilteredBoilerParts(data)
 }
+
+
