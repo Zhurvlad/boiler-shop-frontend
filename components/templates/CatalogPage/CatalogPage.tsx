@@ -27,6 +27,9 @@ import {IBoilerParts} from '../../../types/boilerParts';
 import skeletonStyles from '../../../styles/skeleton/index.module.scss'
 import styles from '../../../styles/catalog/index.module.scss'
 import {setTimeout} from 'timers';
+import {usePopup} from '../../../hooks/usePopup';
+import {checkQueryParams} from '../../../utils/catalog';
+import {FilterSvg} from '../../elements/FilterSvg/FilterSvg';
 
 
 export const CatalogPage = ({query}: { query: IQueryParams }) => {
@@ -57,9 +60,12 @@ export const CatalogPage = ({query}: { query: IQueryParams }) => {
 
   const pageCount = Math.ceil(boilerParts.count / 20)
 
+  console.log(boilerParts.rows)
 
   const isValidOffset = query?.offset && !isNaN(+query.offset) && query.offset > 0
   const [currentPage, setCurrentPage] = React.useState(isValidOffset ? +query.offset - 1 : 0)
+
+  const {toggleOpen, open, closePopup} = usePopup()
 
   React.useEffect(() => {
     loadBoilerParts()
@@ -132,10 +138,16 @@ export const CatalogPage = ({query}: { query: IQueryParams }) => {
         return
       }
 
+      const {
+        isValidBoilerQuery,
+        isValidPartsQuery,
+        isValidPriceQuery,
+      } = checkQueryParams(router)
+
       const result = await getBoilerPartsFx(`/boiler-parts?limit=20&offset=${selected}
-        ${isFilteredInQuery && router.query.boiler ? `&boiler=${router.query.boiler}` : ''}
-        ${isFilteredInQuery && router.query.parts ? `&parts=${router.query.parts}` : ''}
-        ${isFilteredInQuery && router.query.priceFrom && router.query.priceTo
+        ${isFilteredInQuery && isValidBoilerQuery ? `&boiler=${router.query.boiler}` : ''}
+        ${isFilteredInQuery && isValidPartsQuery ? `&parts=${router.query.parts}` : ''}
+        ${isFilteredInQuery && isValidPriceQuery
         ? `&priceFrom=${router.query.priceFrom}&priceTo=${router.query.priceTo}` : ''}
         `)
 
@@ -202,6 +214,12 @@ export const CatalogPage = ({query}: { query: IQueryParams }) => {
                     className={`${styles.catalog__top__reset} ${darkModeClass}`} disabled={resetFilterBtnDisabled}
             >Сбросить фильтр
             </button>
+            <button className={styles.catalog__top__mobile_btn} onClick={toggleOpen}>
+              <span className={styles.catalog__top__mobile_btn__svg}>
+                <FilterSvg/>
+              </span>
+              <span className={styles.catalog__top__mobile_btn__text}>Фильтр</span>
+            </button>
             <FilterSelect setSpinner={setSpinner}/>
           </div>
         </div>
@@ -215,6 +233,9 @@ export const CatalogPage = ({query}: { query: IQueryParams }) => {
                             isPriceRangeChanged={isPriceRangeChanged}
                             currentPage={currentPage}
                             setFilteredInQuery={setFilteredInQuery}
+                            closePopup={closePopup}
+                            filtersMobileOpen={open}
+
             />
             {spinner
               ? <ul className={skeletonStyles.skeleton}>

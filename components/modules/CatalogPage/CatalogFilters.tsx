@@ -13,11 +13,13 @@ import {
 import {useRouter} from 'next/router';
 import {getBoilerPartsFx} from '../../../app/api/boilerParts';
 import {getQueryParamOnFirstRender} from '../../../utils/common';
+import {CatalogFiltersMobile} from './CatalogFiltersMobile';
+import {checkQueryParams, updateParamsAndFilters, updateParamsAndFiltersFromQuery} from '../../../utils/catalog';
 
 export const CatalogFilters = ({
                                  priceRange, setPriceRange, setIsPriceRangeChanged,
                                  resetFilterBtnDisabled, resetFilters, isPriceRangeChanged,
-                                 currentPage, setFilteredInQuery
+                                 currentPage, setFilteredInQuery, closePopup, filtersMobileOpen
                                }: ICatalogFiltersProps) => {
   const isMobile = useMediaQuery(820)
   const [spinner, setSpinner] = React.useState(false)
@@ -30,66 +32,99 @@ export const CatalogFilters = ({
     applyFiltersFromQuery()
   }, [])
 
+
   const applyFiltersFromQuery = async () => {
     try {
-      //Получаем параметры из квери
-      const priceFromQueryValue = getQueryParamOnFirstRender('priceFrom', router)
-      const priceToQueryValue = getQueryParamOnFirstRender('priceTo', router)
-      const boilerQueryValue = JSON.parse(decodeURIComponent(getQueryParamOnFirstRender('boiler', router) as string))
-      const partsQueryValue = JSON.parse(decodeURIComponent(getQueryParamOnFirstRender('parts', router) as string))
-
-      //Проверяем не испорченали адресная строка
-      const isValidBoilerQuery = Array.isArray(boilerQueryValue) && !!boilerQueryValue?.length
-      const isValidPartsQuery = Array.isArray(partsQueryValue) && !!partsQueryValue?.length
+      const {
+        isValidBoilerQuery,
+        isValidPartsQuery,
+        isValidPriceQuery,
+        priceFromQueryValue,
+        priceToQueryValue,
+        boilerQueryValue,
+        partsQueryValue
+      } = checkQueryParams(router)
 
       const boilerQuery = `&boiler=${getQueryParamOnFirstRender('boiler', router)}`
       const partsQuery = `&parts=${getQueryParamOnFirstRender('parts', router)}`
       const priceQuery = `&priceFrom=${priceFromQueryValue}&priceTo=${priceToQueryValue}`
 
-      if(isValidBoilerQuery && isValidPartsQuery && priceFromQueryValue && priceToQueryValue){
-       await updateParamsAndFiltersFromQuery(() => {
+      if (isValidBoilerQuery && isValidPartsQuery && isValidPriceQuery) {
+        await updateParamsAndFiltersFromQuery(() => {
+          updatePriceFromQuery(+priceFromQueryValue, +priceToQueryValue)
+          setBoilerManufacturersFromQuery(boilerQueryValue)
+          setPartsManufacturersFromQuery(partsQueryValue)
+        }, `${currentPage}${priceQuery}${boilerQuery}${partsQuery}`)
+        return
+      }
+
+      if (priceFromQueryValue && priceToQueryValue) {
+        await updateParamsAndFiltersFromQuery(() => {
           setFilteredInQuery(true)
           setPriceRange([+priceFromQueryValue, +priceToQueryValue])
           setIsPriceRangeChanged(true)
-         setBoilerManufacturersFromQuery(boilerQueryValue)
-         setPartsManufacturersFromQuery(partsQueryValue)
-        }, `${currentPage}${priceQuery}${boilerQuery}${partsQuery}`)
+        }, `${currentPage}${priceQuery}`)
+        return
       }
 
+      if (isValidBoilerQuery && isValidPartsQuery) {
+        await updateParamsAndFiltersFromQuery(() => {
+          setFilteredInQuery(true)
+          setBoilerManufacturersFromQuery(boilerQueryValue)
+          setPartsManufacturersFromQuery(partsQueryValue)
+        }, `${currentPage}${boilerQuery}${partsQuery}`)
+        return
+      }
+
+      if (isValidBoilerQuery) {
+        await updateParamsAndFiltersFromQuery(() => {
+          setFilteredInQuery(true)
+          setBoilerManufacturersFromQuery(boilerQueryValue)
+        }, `${currentPage}${boilerQuery}`)
+        return
+      }
+
+      if (isValidPartsQuery) {
+        await updateParamsAndFiltersFromQuery(() => {
+          setFilteredInQuery(true)
+          setPartsManufacturersFromQuery(partsQueryValue)
+        }, `${currentPage}${partsQuery}`)
+        return
+      }
+
+      if (isValidPartsQuery && isValidPriceQuery) {
+        await updateParamsAndFiltersFromQuery(() => {
+          updatePriceFromQuery(+priceFromQueryValue, +priceToQueryValue)
+          setPartsManufacturersFromQuery(partsQueryValue)
+        }, `${currentPage}${priceQuery}${partsQuery}`)
+        return
+      }
+
+      if (isValidBoilerQuery && isValidPriceQuery) {
+        await updateParamsAndFiltersFromQuery(() => {
+          updatePriceFromQuery(+priceFromQueryValue, +priceToQueryValue)
+          setBoilerManufacturersFromQuery(boilerQueryValue)
+        }, `${currentPage}${priceQuery}${boilerQuery}`)
+        return
+      }
 
     } catch (e) {
-      toast.error((e as Error).message)
+      const err = e as Error
+      if(err.message === 'URI malformed'){
+        toast.warning('Неправильный url для фильтров')
+        return
+      }
+      toast.error(e.message)
     }
   }
+  const updatePriceFromQuery = (priceFromQueryValue: number, priceToQueryValue: number) => {
+    setFilteredInQuery(true)
+    setPriceRange([priceFromQueryValue, priceToQueryValue])
+    setIsPriceRangeChanged(true)
+  }
+
   //TODO: Разобраться с огромным количество рендеров ползунка с ценой. Добавить дебоунс
   console.log(isPriceRangeChanged, 1010)
-
-  const updateParamsAndFiltersFromQuery = async (callback: () => void, path: string) => {
-    callback()
-
-    const data = await getBoilerPartsFx(`/boiler-parts?limit=20&offset=${path}`)
-    setFilteredBoilerParts(data)
-  }
-
-  async function updateParamsAndFilters<T>(updateParams: T, path: string) {
-    const params = router.query
-
-    delete params.boiler
-    delete params.parts
-    delete params.priceTo
-    delete params.priceFrom
-
-    await router.push({
-      query: {
-        ...params,
-        ...updateParams
-      }
-    }, undefined, {shallow: true})
-
-    const data = await getBoilerPartsFx(`/boiler-parts?limit=20&offset=${path}`)
-    setFilteredBoilerParts(data)
-
-  }
 
   const applyFilters = async () => {
     setFilteredInQuery(true)
@@ -120,7 +155,10 @@ export const CatalogFilters = ({
           priceFrom,
           priceTo,
           offset: initialPage + 1,
-        }, `${initialPage}${boilerQuery}${partsQuery}${priceQuery}`)
+        }, `${initialPage}${priceQuery}${boilerQuery}${partsQuery}`,
+          router
+          )
+          return
       }
 
       if (isPriceRangeChanged) {
@@ -128,7 +166,8 @@ export const CatalogFilters = ({
           priceFrom,
           priceTo,
           offset: initialPage + 1
-        }, `${initialPage}${priceQuery}`)
+        }, `${initialPage}${priceQuery}`,
+          router)
       }
 
       if (boiler.length && parts.length) {
@@ -136,21 +175,25 @@ export const CatalogFilters = ({
           boiler: encodedBoilerQuery,
           parts: encodedPartsQuery,
           offset: initialPage + 1
-        }, `${initialPage}${boilerQuery}${partsQuery}`)
+        }, `${initialPage}${boilerQuery}${partsQuery}`,
+          router)
+        return
       }
 
       if (boiler.length) {
         await updateParamsAndFilters({
           boiler: encodedBoilerQuery,
           offset: initialPage + 1
-        }, `${initialPage}${boilerQuery}`)
+        }, `${initialPage}${boilerQuery}`,
+          router)
       }
 
       if (parts.length) {
         await updateParamsAndFilters({
           parts: encodedPartsQuery,
           offset: initialPage + 1
-        }, `${initialPage}${partsQuery}`)
+        }, `${initialPage}${partsQuery}`,
+          router)
 
       }
 
@@ -160,7 +203,8 @@ export const CatalogFilters = ({
           priceTo,
           boiler: encodedBoilerQuery,
           offset: initialPage + 1
-        }, `${initialPage}${boilerQuery}${priceQuery}`)
+        }, `${initialPage}${boilerQuery}${priceQuery}`,
+          router)
       }
 
       if (parts.length && isPriceRangeChanged) {
@@ -169,7 +213,8 @@ export const CatalogFilters = ({
           priceTo,
           parts: encodedPartsQuery,
           offset: initialPage + 1
-        }, `${initialPage}${partsQuery}${priceQuery}`)
+        }, `${initialPage}${partsQuery}${priceQuery}`,
+          router)
       }
 
     } catch (e) {
@@ -182,7 +227,17 @@ export const CatalogFilters = ({
   return (
     <>
       {isMobile
-        ? <div/>
+        ? <CatalogFiltersMobile
+          closePopup={closePopup}
+          spinner={spinner}
+          applyFilters={applyFilters}
+          priceRange={priceRange}
+          setPriceRange={setPriceRange}
+          setIsPriceRangeChanged={setIsPriceRangeChanged}
+          resetFilterBtnDisabled={resetFilterBtnDisabled}
+          resetFilters={resetFilters}
+          filtersMobileOpen={filtersMobileOpen}
+        />
         : <CatalogFiltersDesktop
           priceRange={priceRange}
           setIsPriceRangeChanged={setIsPriceRangeChanged}
@@ -191,7 +246,6 @@ export const CatalogFilters = ({
           spinner={spinner}
           resetFilters={resetFilters}
           applyFilters={applyFilters}
-
         />}
     </>
   )

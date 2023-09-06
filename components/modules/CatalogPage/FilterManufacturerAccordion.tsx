@@ -5,6 +5,7 @@ import {$mode} from '../../../context/mode';
 import styles from '../../../styles/catalog/index.module.scss';
 import {Accordion} from '../../elements/Accordion/Accordion';
 import {FilterCheckboxItem} from './FilterCheckboxItem';
+import React from 'react';
 
 
 export const FilterManufacturerAccordion = ({manufacturerList, setManufacturer, title, updateManufacturer}: IFilterManufacturerAccordionProps) => {
@@ -27,22 +28,25 @@ export const FilterManufacturerAccordion = ({manufacturerList, setManufacturer, 
       isMobileForFilters={isMobile}
       hideArrowClass={isMobile ? styles.hide_arrow : ''}
     >
-      <div className={styles.filters__manufacturet__inner}>
-        <button className={styles.filters__manufacturer__select_all} onClick={chooseAllManufacturers}>
-          Выбрать всё
+      <div className={styles.filters__manufacturer__inner}>
+        <button
+          className={styles.filters__manufacturer__select_all}
+          onClick={chooseAllManufacturers}
+        >
+          Выбрать все
         </button>
         <ul className={styles.filters__manufacturer__list}>
-          {manufacturerList.map((i) => (
+          {manufacturerList.map((item) => (
             <FilterCheckboxItem
-            id={i.id}
-            checked={i.checked}
-            title={i.title}
-            event={updateManufacturer}
-            key={i.id}
+              title={item.title}
+              id={item.id}
+              key={item.id}
+              checked={item.checked}
+              event={updateManufacturer}
             />
           ))}
         </ul>
-        <div style={{height: 24}}/>
+        <div style={{ height: 24 }} />
       </div>
     </Accordion>
   )

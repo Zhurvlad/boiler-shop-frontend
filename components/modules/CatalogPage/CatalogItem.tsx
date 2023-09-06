@@ -11,11 +11,14 @@ import {CartHoverSvg} from '../../elements/CartHover/CartHover';
 
 import styles from '../../../styles/catalog/index.module.scss';
 import spinnerStyles from '../../../styles/spinner/index.module.scss'
+import {toggleCartItem} from '../../../utils/shopping-cart';
+import {$user} from '../../../context/user';
 
 
 export const CatalogItem = ({item}: { item: IBoilerPart }) => {
 
   const shoppingCart = useStore($shoppingCart)
+  const user = useStore($user)
 
   const [spinner, setSpinner] = React.useState(false)
   const isInCart = shoppingCart.some((i) => i.partId === item.id)
@@ -23,6 +26,7 @@ export const CatalogItem = ({item}: { item: IBoilerPart }) => {
   const mode = useStore($mode)
   const darkModeClass = mode === 'dark' ? `${styles.dark_mode}` : ''
 
+  const toggleToCart = () => toggleCartItem(user.username,  item.id, isInCart, setSpinner)
 
   return (
     <li className={`${styles.catalog__list__item} ${darkModeClass}`}>
@@ -38,7 +42,7 @@ export const CatalogItem = ({item}: { item: IBoilerPart }) => {
           {formatPrice(item.price)} ₽
         </span>
       </div>
-      <button disabled={spinner} className={`${styles.catalog__list__item__cart} ${isInCart ? styles.added : ''}`}>
+      <button onClick={toggleToCart} disabled={spinner} className={`${styles.catalog__list__item__cart} ${isInCart ? styles.added : ''}`}>
         {spinner
           ? <div className={spinnerStyles.spinner} style={{top: 6, left: 6}}/>
           : <span>{isInCart

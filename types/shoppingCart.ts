@@ -14,3 +14,9 @@ export interface IShoppingCartItem {
   total_price: number,
 
 }
+
+export interface IAddToCartFx {
+  url: string,
+  username: string,
+  partId: number
+}

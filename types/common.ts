@@ -11,7 +11,7 @@ export interface IAccordion {
   children: React.ReactNode,
   title?: string,
   titleClass: string,
-  arrowOpenClass: string,
+  arrowOpenClass?: string,
   isMobileForFilters?: boolean,
   hideArrowClass?:string
 }

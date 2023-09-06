@@ -6,19 +6,38 @@ import {withClickOutside} from '../../../../utils/withClickOutside';
 import {ShoppingCartSvg} from '../../../elements/ShoppingCartSvg/ShoppingCartSvg';
 import {IWrappedComponentProps} from '../../../../types/common';
 import {$mode} from '../../../../context/mode';
-import {$shoppingCart} from '../../../../context/shopping-cart'
+import {$shoppingCart, setShoppingCart} from '../../../../context/shopping-cart'
 
 import styles from '../../../../styles/cartPopup/index.module.scss'
 import Link from 'next/link';
+import {CartPopupItem} from './CartPopupItem';
+import {$user} from '../../../../context/user';
+import {getCartItemsFx} from '../../../../app/api/shopping-cart';
+import {toast} from 'react-toastify';
 
 
 const CartPopup = forwardRef<HTMLDivElement, IWrappedComponentProps>(({opened, setOpened}, ref) => {
 
   const mode = useStore($mode)
+  const user = useStore($user)
   const shoppingCart = useStore($shoppingCart)
   const darkModeClass = mode === 'dark' ? `${styles.dark_mode}` : ''
 
   const toggleCartDropDown = () => setOpened(!opened)
+
+  React.useEffect(() => {
+    loadCartItems()
+  }, [])
+
+  const loadCartItems = async () => {
+    try {
+      const cartItem = await getCartItemsFx(`/shopping-cart/${user.userId}`)
+
+      setShoppingCart(cartItem)
+    } catch (e) {
+      toast.warning(e.message)
+    }
+  }
 
 
 
@@ -48,7 +67,7 @@ const CartPopup = forwardRef<HTMLDivElement, IWrappedComponentProps>(({opened, s
           <h3 className={styles.cart__popup__title}>Корзина</h3>
           <ul className={styles.cart__popup__list}>
             {shoppingCart.length
-              ? shoppingCart.map((item) => <li key={item.id}/>)
+              ? shoppingCart.map((item) => <CartPopupItem  item={item} key={item.id}/>)
               : <li className={styles.cart__popup__empty}>
                   <span className={`${styles.cart__popup__empty__text} ${darkModeClass}`}>Корзина пуста</span>
                 </li>
