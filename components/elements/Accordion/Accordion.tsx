@@ -3,11 +3,18 @@ import {motion, AnimatePresence} from "framer-motion";
 import {IAccordion} from '../../../types/common';
 
 
-export const Accordion = ({children, arrowOpenClass, title, titleClass, isMobileForFilters, hideArrowClass}: IAccordion) => {
+export const Accordion = ({children, arrowOpenClass, title,
+                            titleClass, isMobileForFilters, hideArrowClass, boxShadowStyles, callback}: IAccordion) => {
 
   const [expanded, setExpanded] = React.useState(false)
 
-  const toggleAccordion = () => setExpanded(!expanded)
+  const toggleAccordion = () => {
+    if(callback){
+      callback(expanded)
+    }
+    setExpanded(!expanded)
+
+  }
 
   return (
     <>

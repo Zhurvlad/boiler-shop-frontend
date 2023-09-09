@@ -6,12 +6,14 @@ import {$mode} from '../../../context/mode';
 import styles from '../../../styles/dashboard/index.module.scss';
 import {formatPrice} from '../../../utils/common';
 import {ICartAlertProps} from '../../../types/dashboard';
+import {$totalPrice} from '../../../context/shopping-cart';
 
 
 export const CartAlert = ({count, closeAlert}: ICartAlertProps) => {
 
   const mode = useStore($mode)
   const darkModeClass = mode === 'dark' ? `${styles.dark_mode}` : ''
+  const totalPrice = useStore($totalPrice)
 
   const showCountMessage = (count: string) => {
     if (count.endsWith('1')) {
@@ -31,7 +33,7 @@ export const CartAlert = ({count, closeAlert}: ICartAlertProps) => {
           В корзине {count} {showCountMessage(`${count}`)}
         </span>
         <span>
-          На сумму {formatPrice(0)} ₽
+          На сумму {formatPrice(totalPrice)} ₽
         </span>
       </div>
       <div className={styles.dashboard__alert__right}>

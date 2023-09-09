@@ -13,7 +13,9 @@ export interface IAccordion {
   titleClass: string,
   arrowOpenClass?: string,
   isMobileForFilters?: boolean,
-  hideArrowClass?:string
+  hideArrowClass?:string,
+  boxShadowStyles?: string,
+  callback: (i: boolean) => void
 }
 
 

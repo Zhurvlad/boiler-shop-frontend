@@ -34,6 +34,15 @@ export const DashboardPage = () => {
     loadBoilerParts()
   }, [])
 
+  React.useEffect(() => {
+
+    if(shoppingCart.length){
+      setShowAlert(true)
+      return
+    }
+    setShowAlert(false)
+  })
+
   const loadBoilerParts = async () => {
     try {
       setSpinner(true)

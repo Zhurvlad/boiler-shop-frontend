@@ -18,7 +18,8 @@ export interface IQueryParams {
   boiler: string,
   parts: string,
   priceFrom: string,
-  priceTo: string
+  priceTo: string,
+  partId: string
 }
 
 
