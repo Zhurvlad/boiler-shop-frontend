@@ -10,6 +10,7 @@ import {formatPrice} from '../../../../utils/common';
 import {removeItemFromCart, updateTotalPrice} from '../../../../utils/shopping-cart';
 
 import {CartItemCount} from '../../../elements/CartItemCounter/CartItemCounter';
+import {usePrice} from '../../../../types/usePrice';
 
 
 export const CartPopupItem = ({item}: { item: IShoppingCartItem }) => {
@@ -17,11 +18,13 @@ export const CartPopupItem = ({item}: { item: IShoppingCartItem }) => {
   const mode = useStore($mode)
   const darkModeClass = mode === 'dark' ? `${styles.dark_mode}` : ''
   const spinnerDarkModeClass = mode === 'dark' ? '' : `${spinnerStyles.dark_mode}`
-  const [spinner, setSpinner] = React.useState(false)
+/*  const [spinner, setSpinner] = React.useState(false)
 
-  const [price, setPrice] = useState(item.price)
+  const [price, setPrice] = useState(item.price)*/
 
-  React.useEffect(() => {
+  const {price, spinner, increasePrice, decreasePrice, deleteCartItem} = usePrice(item.count, item.partId, item.price)
+
+ /* React.useEffect(() => {
     setPrice(price * item.count)
   }, [])
 
@@ -33,7 +36,7 @@ export const CartPopupItem = ({item}: { item: IShoppingCartItem }) => {
   const decreasePrice = () => setPrice(price - item.price)
 
   const deleteCartItem = () => removeItemFromCart(item.partId, setSpinner)
-
+*/
   return (
     <li className={styles.cart__popup__list__item}>
       <div className={styles.cart__popup__list__item__top}>
@@ -58,6 +61,7 @@ export const CartPopupItem = ({item}: { item: IShoppingCartItem }) => {
           : <CartItemCount decreasePrice={decreasePrice} increasePrice={increasePrice}
                            initialCount={item.count} partId={item.partId} totalCount={item.in_stocks}/>}
           <span className={`${styles.cart__popup__list__item__price} ${darkModeClass}`}>{formatPrice(price)} p</span>
+
       </div>
     </li>
   )

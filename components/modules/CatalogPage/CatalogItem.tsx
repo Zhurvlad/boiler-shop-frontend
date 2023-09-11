@@ -13,6 +13,7 @@ import styles from '../../../styles/catalog/index.module.scss';
 import spinnerStyles from '../../../styles/spinner/index.module.scss'
 import {toggleCartItem} from '../../../utils/shopping-cart';
 import {$user} from '../../../context/user';
+import {removeFromCartFx} from '../../../app/api/shopping-cart';
 
 
 export const CatalogItem = ({item}: { item: IBoilerPart }) => {
@@ -20,13 +21,13 @@ export const CatalogItem = ({item}: { item: IBoilerPart }) => {
   const shoppingCart = useStore($shoppingCart)
   const user = useStore($user)
 
-  const [spinner, setSpinner] = React.useState(false)
+  const spinner = useStore(removeFromCartFx.pending)
   const isInCart = shoppingCart.some((i) => i.partId === item.id)
 
   const mode = useStore($mode)
   const darkModeClass = mode === 'dark' ? `${styles.dark_mode}` : ''
 
-  const toggleToCart = () => toggleCartItem(user.username,  item.id, isInCart, setSpinner)
+  const toggleToCart = () => toggleCartItem(user.username,  item.id, isInCart)
 
   return (
     <li className={`${styles.catalog__list__item} ${darkModeClass}`}>

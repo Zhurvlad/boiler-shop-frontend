@@ -23,6 +23,7 @@ import {getBoilerPartsFx} from '../../../app/api/boilerParts';
 import {$boilerParts, setBoilerParts, setBoilerPartsByPopularityFirst} from '../../../context/boilerParts';
 import {setTimeout} from 'timers';
 import {PartPageAccordion} from '../../modules/PartPage/PartPageAccordion';
+import {removeFromCartFx} from '../../../app/api/shopping-cart';
 
 
 export const PartPage = () => {
@@ -35,10 +36,10 @@ export const PartPage = () => {
   const user = useStore($user)
   const isMobile850 = useMediaQuery(850)
   const isInCart = cartItems.some((i) => i.partId === boilerPart.id)
-  const [spinnerAddToCart, setSpinnerAddToCart] = React.useState(false)
-  const [spinnerSlider, setSpinnerSlider] = React.useState(false)
+  const spinnerAddToCart = useStore(removeFromCartFx.pending)
+  const spinnerSlider = useStore(getBoilerPartsFx.pending)
 
-  const addToCart = () => toggleCartItem(user.username, boilerPart.id, isInCart, setSpinnerAddToCart)
+  const addToCart = () => toggleCartItem(user.username, boilerPart.id, isInCart)
 
 
 
@@ -48,15 +49,13 @@ export const PartPage = () => {
 
   const loadBoilerParts = async () => {
     try {
-      setSpinnerSlider(true)
+
       const data = await  getBoilerPartsFx('/boiler-parts?limit=20&offset=0')
 
       setBoilerParts(data)
       setBoilerPartsByPopularityFirst()
     } catch (e) {
       toast.error(e.message)
-    } finally {
-      setTimeout(() => setSpinnerSlider(false), 1000)
     }
   }
 
