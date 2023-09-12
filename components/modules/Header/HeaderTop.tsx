@@ -51,7 +51,7 @@ export const HeaderTop = () => {
               </Link>
             </li>
             <li className={styles.header__nav__list__item}>
-              <Link href={'/wholesale-byers'} legacyBehavior>
+              <Link href={'/wholesale-buyers'} legacyBehavior>
                 <a className={`${styles.header__nav__list__item__link} ${darkModeClass}`} onClick={closePopup}>Оптовым покупателям</a>
               </Link>
             </li>

@@ -1,15 +1,14 @@
 import Head from 'next/head'
-
 import {Layout} from '../../components/layout/Layout';
-import {ShippingPayment} from '../../components/templates/ShippingPayment/ShippingPayment';
+import AboutPage from '../../components/templates/AboutPage/AboutPage';
 
-export default function ShoppingPayment() {
+export default function About() {
 
 
   return (
     <>
       <Head>
-        <title>Акватермикс | Доставка и оплата</title>
+        <title>Акватермикс | О компании</title>
         <meta charSet='UTF-8'/>
         <meta httpEquiv='X-UA-Compatible' content='IE-edge'/>
         <meta name="viewport" content="width=device-width, initial-scale=1"/>
@@ -18,7 +17,7 @@ export default function ShoppingPayment() {
 
       <Layout>
         <main>
-          <ShippingPayment/>
+          <AboutPage/>
           <div className={'overlay'}/>
         </main>
       </Layout>
