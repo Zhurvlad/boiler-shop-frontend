@@ -21,7 +21,7 @@ export const OrderAccordion = ({setOrderIsReady, showDoneIcon}: IOrderAccordionP
   const darkModeClass = mode === 'dark' ? `${styles.dark_mode}` : ''
   const isMedia550 = useMediaQuery(550)
 
-  const [expanded, setExpanded] = React.useState(false)
+  const [expanded, setExpanded] = React.useState(true)
 
   const openAccordion = () => {
     setExpanded(true)

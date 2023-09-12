@@ -126,7 +126,9 @@ export const CatalogPage = ({query}: { query: IQueryParams }) => {
 
   /*console.log('SCOPE', scope.getState($shoppingCart))*/
 
+/*
   console.log('BOILER', scopeA.getState($boilerParts))
+*/
 
 
 

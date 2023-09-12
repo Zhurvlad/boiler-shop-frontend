@@ -146,7 +146,7 @@ export const CatalogFilters = ({
 
       const initialPage = currentPage > 0 ? 0 : currentPage
 
-      console.log(currentPage)
+     /* console.log(currentPage)*/
 
       if (boiler.length && parts.length && isPriceRangeChanged) {
         await updateParamsAndFilters({

@@ -38,7 +38,7 @@ export const CartItemCount = ({decreasePrice, increasePrice, initialCount, partI
 
   }, [count, totalCount])
 
-  console.log(count, totalCount)
+  /*console.log(count, totalCount)*/
 
   const increase = async () => {
     try {

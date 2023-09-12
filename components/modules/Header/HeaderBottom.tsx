@@ -1,13 +1,15 @@
 import {useStore} from 'effector-react';
 import {$mode} from '../../../context/mode';
 import styles from '../../../styles/header/index.module.scss';
-import React from 'react';
+import React, {useEffect} from 'react';
 import Link from 'next/link';
 import {SearchSvg} from '../../elements/SearchSvg/SearchSvg';
 import {SearchInput} from '../../elements/Header/SearchInput';
 import {ModeToggler} from '../../elements/ModeToggler/ModeToggler';
 import CartPopup from './CartPopup/CartPopup';
 import {useMediaQuery} from '../../../hooks/useMediaQuery';
+import {useRouter} from 'next/router';
+import {setDisableCart} from '../../../context/shopping-cart';
 
 
 export const HeaderBottom = () => {
@@ -15,6 +17,17 @@ export const HeaderBottom = () => {
   const isMedia950 = useMediaQuery(950)
   const mode = useStore($mode)
   const darkModeClass = mode === 'dark' ? `${styles.dark_mode}` : ''
+  const router = useRouter()
+
+  useEffect(() => {
+    if(router.pathname === '/order'){
+
+      setDisableCart(true)
+      return
+    }
+
+    setDisableCart(false)
+  }, [router.pathname])
 
   return (
     <div className={styles.header__bottom}>

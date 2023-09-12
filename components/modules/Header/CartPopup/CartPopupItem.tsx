@@ -11,6 +11,7 @@ import {removeItemFromCart, updateTotalPrice} from '../../../../utils/shopping-c
 
 import {CartItemCount} from '../../../elements/CartItemCounter/CartItemCounter';
 import {usePrice} from '../../../../types/usePrice';
+import {$disableCart} from '../../../../context/shopping-cart';
 
 
 export const CartPopupItem = ({item}: { item: IShoppingCartItem }) => {

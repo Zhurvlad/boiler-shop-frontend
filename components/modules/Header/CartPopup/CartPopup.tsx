@@ -6,7 +6,13 @@ import {withClickOutside} from '../../../../utils/withClickOutside';
 import {ShoppingCartSvg} from '../../../elements/ShoppingCartSvg/ShoppingCartSvg';
 import {IWrappedComponentProps} from '../../../../types/common';
 import {$mode} from '../../../../context/mode';
-import {$shoppingCart, $totalPrice, setShoppingCart, setTotalPrice} from '../../../../context/shopping-cart'
+import {
+  $disableCart,
+  $shoppingCart,
+  $totalPrice,
+  setShoppingCart,
+  setTotalPrice
+} from '../../../../context/shopping-cart'
 
 import styles from '../../../../styles/cartPopup/index.module.scss'
 import Link from 'next/link';
@@ -21,18 +27,22 @@ const CartPopup = forwardRef<HTMLDivElement, IWrappedComponentProps>(({opened, s
 
   const mode = useStore($mode)
   const user = useStore($user)
+  const disableCart = useStore($disableCart)
+
   const totalPrice = useStore($totalPrice)
   const shoppingCart = useStore($shoppingCart)
   const darkModeClass = mode === 'dark' ? `${styles.dark_mode}` : ''
 
-  console.log(shoppingCart, 9999)
+  /*console.log(shoppingCart, 9999)*/
 
   const toggleCartDropDown = () => setOpened(!opened)
 
   React.useEffect(() => {
     loadCartItems()
   }, [])
+/*
   console.log(shoppingCart.reduce((sum, obj) => sum + obj.total_price, 0), 9090)
+*/
 
   React.useEffect(() => {
     setTotalPrice(shoppingCart.reduce((sum, obj) => sum + obj.total_price, 0))
@@ -49,21 +59,28 @@ const CartPopup = forwardRef<HTMLDivElement, IWrappedComponentProps>(({opened, s
   }
 
 
-
   return (
     <div className={styles.cart} ref={ref}>
-      <button className={`${styles.cart__btn} ${darkModeClass}`} onClick={toggleCartDropDown}>
-
-        {!!shoppingCart.length &&
-        <span className={styles.cart__btn__count}>{shoppingCart.length}</span>
-        }
-        <span className={styles.cart__svg}>
+      {disableCart
+        ? <button className={`${styles.cart__btn} ${darkModeClass}`} style={{cursor: 'auto'}}>
+          <span className={styles.cart__svg}>
           <ShoppingCartSvg/>
         </span>
-        <span className={styles.cart__text}>
+          <span className={styles.cart__text}>
         Корзина
       </span>
-      </button>
+        </button>
+        : <button className={`${styles.cart__btn} ${darkModeClass}`} onClick={toggleCartDropDown}>
+          {!!shoppingCart.length &&
+          <span className={styles.cart__btn__count}>{shoppingCart.length}</span>
+          }
+          <span className={styles.cart__svg}>
+          <ShoppingCartSvg/>
+        </span>
+          <span className={styles.cart__text}>
+        Корзина
+      </span>
+        </button>}
       <AnimatePresence>
         {opened &&
         <motion.ul
@@ -76,10 +93,10 @@ const CartPopup = forwardRef<HTMLDivElement, IWrappedComponentProps>(({opened, s
           <h3 className={styles.cart__popup__title}>Корзина</h3>
           <ul className={styles.cart__popup__list}>
             {shoppingCart.length
-              ? shoppingCart.map((item) => <CartPopupItem  item={item} key={item.id}/>)
+              ? shoppingCart.map((item) => <CartPopupItem item={item} key={item.id}/>)
               : <li className={styles.cart__popup__empty}>
-                  <span className={`${styles.cart__popup__empty__text} ${darkModeClass}`}>Корзина пуста</span>
-                </li>
+                <span className={`${styles.cart__popup__empty__text} ${darkModeClass}`}>Корзина пуста</span>
+              </li>
             }
           </ul>
           <div className={styles.cart__popup__footer}>
