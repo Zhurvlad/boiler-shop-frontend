@@ -7,7 +7,7 @@ import React from 'react';
 import {checkPaymentFx, makePaymentFx} from '../../../app/api/payment';
 import {toast} from 'react-toastify';
 import {useRouter} from 'next/router';
-import {$user} from '../../../context/user';
+import {$user, $userCity} from '../../../context/user';
 import {removeFromCartFx} from '../../../app/api/shopping-cart';
 import styles from '../../../styles/order/index.module.scss'
 import spinnerStyles from '../../../styles/spinner/index.module.scss'
@@ -16,6 +16,7 @@ export const OrderPage = () => {
 
   const mode = useStore($mode)
   const user = useStore($user)
+  const userCity = useStore($userCity)
   const shoppingCart = useStore($shoppingCart)
   const totalPrice = useStore($totalPrice)
   const darkModeClass = mode === 'dark' ? `${styles.dark_mode}` : ''
@@ -40,7 +41,8 @@ export const OrderPage = () => {
     try {
       const data = await makePaymentFx({
         url: '/payment',
-        amount: totalPrice
+        amount: totalPrice,
+        description: `Заказ №1 ${userCity.city.length ? `Город: ${userCity.city}, улица: ${userCity.street}` : ''}`
       })
 
       sessionStorage.setItem('paymentId', data.id)
@@ -62,8 +64,9 @@ export const OrderPage = () => {
         await removeFromCartFx(`/shopping-cart/all/${user.userId}`)
         sessionStorage.removeItem('paymentId')
         setShoppingCart([])
+        return
       }
-
+      sessionStorage.removeItem('paymentId')
     } catch (e) {
       toast.error(e.message)
       sessionStorage.removeItem('paymentId')

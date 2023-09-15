@@ -31,3 +31,9 @@ export interface IOption {
 
 
 export type SelectOptionType = MultiValue<IOption> | SingleValue<IOption> | null
+
+
+export interface IGeolocation {
+  latitude: number,
+  longitude: number
+}
