@@ -11,23 +11,35 @@ import React, {useState} from 'react';
 import {PartPage} from '../../components/templates/PartPage/PartPage';
 import {useRouter} from 'next/router';
 import {Custom404} from '../404';
+import {Breadcrumbs} from '../../components/modules/Breadcrumbs/Breadcrumbs';
 
-export default function CatalogPartPage({query}: {query:IQueryParams }) {
+export default function CatalogPartPage({query}: { query: IQueryParams }) {
 
   const {shouldLoadContent} = useRedirectByUserCheck()
   const boilerPart = useStore($boilerPart)
   const router = useRouter()
   const [error, setError] = useState(false)
+  const getDefaultTextGenerator = React.useCallback((subPath: string) => subPath.replace('catalog', 'Каталог'),[])
+
+
+  const getTextGenerator = React.useCallback((param: string) => ({}[param]), []);
+  const lastCrumb = document.querySelector('.last-crumb') as HTMLElement
 
   React.useEffect(() => {
     loadBoilerPart()
   }, [router.asPath])
 
+  React.useEffect(() => {
+    if(lastCrumb){
+      lastCrumb.textContent = boilerPart.name
+    }
+  }, [lastCrumb, boilerPart])
+
   const loadBoilerPart = async () => {
     try {
       const data = await getBoilerPartFx(`/boiler-parts/find/${query.partId}`)
 
-      if(!data) {
+      if (!data) {
         setError(true)
         return
       }
@@ -53,6 +65,10 @@ export default function CatalogPartPage({query}: {query:IQueryParams }) {
         &&
         <Layout>
           <main>
+            <Breadcrumbs
+              getDefaultTextGenerator={getDefaultTextGenerator}
+              getTextGenerator={getTextGenerator}
+            />
             <PartPage/>
             <div className={'overlay'}/>
           </main>
@@ -61,8 +77,8 @@ export default function CatalogPartPage({query}: {query:IQueryParams }) {
   )
 }
 
-export function getServerSideProps(context : {query : IQueryParams}) {
+export function getServerSideProps(context: { query: IQueryParams }) {
   return {
-    props: {query : {...context.query}}
+    props: {query: {...context.query}}
   }
 }

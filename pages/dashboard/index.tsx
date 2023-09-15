@@ -3,10 +3,17 @@ import Head from 'next/head'
 import {Layout} from '../../components/layout/Layout';
 import {DashboardPage} from '../../components/templates/DashboardPage/DashboardPage';
 import {useRedirectByUserCheck} from '../../hooks/useRedirectByUserCheck';
+import React from 'react';
+import {Breadcrumbs} from '../../components/modules/Breadcrumbs/Breadcrumbs';
 
 export default function Dashboard() {
 
   const {shouldLoadContent} = useRedirectByUserCheck()
+
+  const getDefaultTextGenerator = () => ''
+
+  const getTextGenerator = () => ''
+
 
 
   return (
@@ -22,6 +29,10 @@ export default function Dashboard() {
       &&
       <Layout>
         <main>
+          <Breadcrumbs
+            getDefaultTextGenerator={getDefaultTextGenerator}
+            getTextGenerator={getTextGenerator}
+          />
           <DashboardPage/>
           <div className={'overlay'}/>
         </main>

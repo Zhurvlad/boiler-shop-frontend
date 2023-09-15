@@ -4,10 +4,16 @@ import {Layout} from '../../components/layout/Layout';
 import {DashboardPage} from '../../components/templates/DashboardPage/DashboardPage';
 import {useRedirectByUserCheck} from '../../hooks/useRedirectByUserCheck';
 import {OrderPage} from '../../components/templates/OrderPage/OrderPage';
+import {Breadcrumbs} from '../../components/modules/Breadcrumbs/Breadcrumbs';
+import React, {useCallback} from 'react';
 
 export default function Order() {
 
   const {shouldLoadContent} = useRedirectByUserCheck()
+
+
+  const getDefaultTextGenerator = useCallback(() => 'Оформление заказа', [])
+  const getTextGenerator = useCallback((param: string) => ({}[param]), [])
 
 
   return (
@@ -23,6 +29,10 @@ export default function Order() {
       &&
       <Layout>
         <main>
+          <Breadcrumbs
+            getDefaultTextGenerator={getDefaultTextGenerator}
+            getTextGenerator={getTextGenerator}
+          />
           <OrderPage/>
           <div className={'overlay'}/>
         </main>

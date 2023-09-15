@@ -5,10 +5,18 @@ import {DashboardPage} from '../../components/templates/DashboardPage/Dashboard'
 import {useRedirectByUserCheck} from '../../hooks/useRedirectByUserCheck';
 import {CatalogPage} from '../../components/templates/CatalogPage/CatalogPage';
 import {IQueryParams} from '../../types/catalog';
+import {Breadcrumbs} from '../../components/modules/Breadcrumbs/Breadcrumbs';
+import React from 'react';
 
 export default function Catalog({query}: {query:IQueryParams }) {
 
   const {shouldLoadContent} = useRedirectByUserCheck()
+
+
+  const getDefaultTextGenerator = React.useCallback(() => 'Каталог', [])
+
+
+  const getTextGenerator = React.useCallback((param: string) => ({}[param]), []);
 
 
   return (
@@ -24,6 +32,10 @@ export default function Catalog({query}: {query:IQueryParams }) {
       &&
       <Layout>
         <main>
+          <Breadcrumbs
+            getDefaultTextGenerator={getDefaultTextGenerator}
+            getTextGenerator={getTextGenerator}
+          />
           <CatalogPage query={query}/>
           <div className={'overlay'}/>
         </main>
