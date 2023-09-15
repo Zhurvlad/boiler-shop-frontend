@@ -9,6 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@emailjs/browser": "^3.11.0",
     "@types/node": "20.4.10",
     "@types/react": "18.2.20",
     "@types/react-dom": "18.2.7",
@@ -42,5 +43,12 @@
     "eslint-plugin-prettier": "^5.0.0",
     "prettier": "^3.0.1"
   },
-  "plugins": [["effector/babel-plugin", { "addLoc": true }]]
+  "plugins": [
+    [
+      "effector/babel-plugin",
+      {
+        "addLoc": true
+      }
+    ]
+  ]
 }

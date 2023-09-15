@@ -20,7 +20,7 @@ export const HeaderBottom = () => {
   const router = useRouter()
 
   useEffect(() => {
-    if(router.pathname === '/order'){
+    if (router.pathname === '/order') {
 
       setDisableCart(true)
       return
@@ -42,11 +42,7 @@ export const HeaderBottom = () => {
         </h1>
         <div className={styles.header__search}>
           <SearchInput/>
-          <button className={`${styles.header__search__btn} ${darkModeClass}`}>
-            <span className={styles.header__search__btn__span}>
-              <SearchSvg/>
-            </span>
-          </button>
+
         </div>
         <div className={styles.header__shopping_cart}>
           {!isMedia950 && <ModeToggler/>}

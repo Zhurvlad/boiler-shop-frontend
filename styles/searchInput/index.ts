@@ -20,11 +20,13 @@ export const controlStyles = (defaultStyles: CSSObjectWithLabel, theme: string) 
 
 export const menuStyles = (defaultStyles: CSSObjectWithLabel, theme: string) => ({
   ...defaultStyles,
-  boxShadow: '0 4px 20px rgb(0 0 0 / 7%)',
-  borderRadius: '4px',
+  boxShadow: 'none',
+  borderRadius: 'none',
+  borderTopLeftRadius: 0,
+  borderTopRightRadius: 0,
   height: 'auto',
   overflow: 'hidden',
-  backgroundColor: theme === 'dark' ? '#222222' : '#f2f2f2',
+  backgroundColor: theme === 'dark' ? '#222222' : '#ffffff',
   /*color: theme === 'dark' ? '#f2f2f2' : '#222222',
   '&:hover': {color: theme === 'dark' ? '#222222' : '#f2f2f2'},
   '&:target': {color: theme === 'dark' ? '#222222' : '#f2f2f2'},
@@ -71,8 +73,8 @@ export const optionStyles = (
     },
     backgroundColor:
       theme === 'dark'
-        ? state.isSelected ? '#f2f2f2' : '#2d2d2d'
-        : state.isSelected ? '#2d2d2d' : '#f2f2f2',
+        ? state.isSelected ? '#ffffff' : '#2d2d2d'
+        : state.isSelected ? '#2d2d2d' : '#ffffff',
     color:
       theme === 'dark'
         ? state.isSelected ? '#222222' : '#f2f2f2'
